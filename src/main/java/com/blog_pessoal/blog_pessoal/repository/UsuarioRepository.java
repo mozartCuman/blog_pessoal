@@ -8,6 +8,6 @@ import com.blog_pessoal.blog_pessoal.model.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
 
-	public Optional<Usuario> findByUsuarioContainingIgnoreCase(String usuario);
+	public Optional<Usuario> findByUsuario(String usuario);
 	
 }

@@ -9,6 +9,7 @@ import java.util.function.Function;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+//io.jsonwebtoken não funcionou antes de dar update no Maven, e conferir o POM.
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -18,14 +19,17 @@ import io.jsonwebtoken.security.Keys;
 @Component //Class
 public class JwtService {
 
-	public static final String SECRET = "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437";
-
+	
+	public static final String SECRET = "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437"; //o atributo SECRET. Este atributo armazenará a Chave de assinatura do Token JWT
+//Foi definido também o modificador static, porque o atributo deve estar associado apenas e exclusivamente a esta Classe
+	
+	
 	private Key getSignKey() {
-		byte[] keyBytes = Decoders.BASE64.decode(SECRET);
+		byte[] keyBytes = Decoders.BASE64.decode(SECRET); //responsáfel por codificar o o SECRET em B64 e gerar a assinatura do JWT 
 		return Keys.hmacShaKeyFor(keyBytes);
 	}
 
-	private Claims extractAllClaims(String token) {
+	private Claims extractAllClaims(String token) {//retorna todas as Claims inseridas no payload do Token JWT
 		return Jwts.parserBuilder()
 				.setSigningKey(getSignKey()).build()
 				.parseClaimsJws(token).getBody();
@@ -38,11 +42,12 @@ public class JwtService {
 
 	public String extractUsername(String token) {
 		return extractClaim(token, Claims::getSubject);
-	}
+	} // Através do operador de referência de métodos (::), que retorna o valor da claim sub.
+	// Recupera os dados da Claim sub, onde se encontra o usuario (e-mail).
 
 	public Date extractExpiration(String token) {
 		return extractClaim(token, Claims::getExpiration);
-	}
+	} 
 
 	private Boolean isTokenExpired(String token) {
 		return extractExpiration(token).before(new Date());
